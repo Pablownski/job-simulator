@@ -1,6 +1,7 @@
 # Environment
 .env
-docker-compose.yml
+.env.local
+.env.*.local
 
 # Dependencies
 node_modules/
@@ -16,3 +17,11 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+
+docker-compose.override.yml
+*.tmp
+*.temp
+*.swp
+*.swo
+dist/
+build/

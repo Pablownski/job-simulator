@@ -12,7 +12,8 @@ require_once "controller.php";
 require_once "validator.php";
 
 $method = $_SERVER["REQUEST_METHOD"];
-$uri = explode("/", trim($_SERVER["REQUEST_URI"], "/"));
+$path = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
+$uri = explode("/", trim($path, "/"));
 
 if ($uri[0] !== "players") {
     http_response_code(404);

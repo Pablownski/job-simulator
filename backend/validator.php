@@ -8,7 +8,7 @@ function validate($data){
             $data["campo3"],
             $data["campo4"],
             $data["campo5"],
-            $data["campo6"],
+            $data["campo6"]
         )
     ){
         return false;

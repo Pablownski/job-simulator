@@ -1,171 +1,252 @@
-# Job Simulator — REST CRUD API
+# ⚽ Players API — REST CRUD (PHP + PostgreSQL + Docker)
 
-## Descripción
+## 📌 Descripción
 
-Se requiere construir una API REST con operaciones CRUD completas, persistencia en base de datos relacional y entorno containerizado. El dominio del recurso queda a criterio del desarrollador.
+Este proyecto implementa una **API REST CRUD** para la gestión de jugadores, desarrollada en **PHP** con persistencia en **PostgreSQL** y totalmente containerizada con **Docker**.
 
-El sistema será consumido por un cliente frontend ya existente. La API debe cumplir el contrato definido en este documento de forma exacta. Cualquier desviación del contrato se considera un fallo de integración.
-
----
-
-## Condiciones de trabajo
-
-Eres un desarrollador backend contratado para entregar un sistema funcional en un tiempo determinado. El pago se acredita únicamente si el sistema es entregado en tiempo y cumple el contrato en su totalidad.
-
-Las siguientes condiciones resultan en terminación del contrato sin compensación parcial:
-
-- El repositorio contiene archivos que no deben ser versionados (`node_modules`, `vendor`, `.env`, binarios, archivos de sistema operativo)
-
-- Entrega fuera del plazo establecido
-- El sistema no levanta con un único comando
-- Algún endpoint no responde o responde de forma incorrecta
-- Los códigos de respuesta HTTP no son los correctos según el estándar REST
-- Las validaciones no están implementadas
-- Los tipos de datos no son respetados
-- Las respuestas no son JSON
-- Almacenamiento en memoria en lugar de base de datos relacional
-- El API no interactua de forma correcta con el frontend.
-
-El nivel de contratación determina el máximo de compensación posible. No existe compensación parcial dentro de un nivel.
+La API cumple con el contrato requerido y es consumida por un frontend provisto.
 
 ---
 
-## Contrato de la API
+## 🧱 Estructura del proyecto
 
-### Estructura del recurso
-
-El recurso expone los siguientes campos con nombres fijos:
-
-| Campo  | Tipo    | Restricciones              |
-| ------ | ------- | -------------------------- |
-| id     | integer | primary key, autoincrement |
-| campo1 | string  | requerido                  |
-| campo2 | string  | requerido                  |
-| campo3 | string  | requerido                  |
-| campo4 | integer | requerido                  |
-| campo5 | float   | requerido                  |
-| campo6 | boolean | requerido                  |
-
-El dominio es libre. Los nombres internos en base de datos y lógica de negocio quedan a criterio del desarrollador.
-
----
-
-### Endpoints
-
-Se requiere implementar los métodos `GET`, `POST`, `PUT` y `DELETE`. El nombre del recurso en la ruta debe seguir las convenciones REST estándar.
-
----
-
-### Validaciones
-
-Todos los campos son requeridos. Los tipos deben ser respetados estrictamente: `campo4` es entero, `campo5` es decimal, `campo6` es booleano.
-
----
-
-### Códigos de respuesta
-
-El uso correcto de códigos HTTP es parte del contrato con el cliente. Todas las respuestas son JSON.
-
----
-
-## Stack
-
-- Lenguaje: Javascript, PHP o Rust — no se aceptan Go ni Python
-- Base de datos: relacional, sin almacenamiento en memoria
-- Containerización: Docker obligatorio
-
-En la carpeta `resources/` se incluyen Dockerfiles de referencia para cada lenguaje y base de datos, y un `.env.example`.
-
----
-
-## Niveles de contratación
-
-La evaluación es **pasa o no pasa**. Indicar el nivel seleccionado al momento de la entrega.
-
----
-
-### Nivel 1 — Junior `(máximo 70/100)`
-
-**Base de datos:** SQLite
-
-**Infraestructura:** `docker-compose.yml` con un único servicio. La base de datos corre embebida dentro del mismo contenedor que la aplicación. `docker-compose up` debe levantar el sistema completo y funcional sin intervención manual.
-
-**Requisitos:**
-- Los cinco endpoints funcionan correctamente contra la base de datos
-- Todas las validaciones están implementadas y retornan los códigos HTTP correspondientes
-- La base de datos persiste los datos correctamente entre operaciones
-- `Dockerfile` y `docker-compose.yml` presentes y funcionales
-
----
-
-### Nivel 2 — Mid `(máximo 85/100)`
-
-**Base de datos:** PostgreSQL
-
-**Infraestructura:** `docker-compose.yml` con dos servicios independientes: aplicación y base de datos. La aplicación debe conectarse a PostgreSQL usando variables de entorno. Un único `docker-compose up` levanta el sistema completo y funcional.
-
-**Requisitos adicionales al Nivel 1:**
-- Archivo `.env` con todas las variables de configuración necesarias
-- Sin credenciales, puertos ni strings de conexión hardcodeados en el código
-- La aplicación maneja correctamente los errores de conexión a la base de datos
-- El servicio de la aplicación no inicia hasta que PostgreSQL esté disponible
-
----
-
-### Nivel 3 — Senior `(máximo 100/100)`
-
-**Base de datos:** PostgreSQL
-
-**Infraestructura:** igual que Nivel 2.
-
-**Requisitos adicionales al Nivel 2:**
-- Endpoint `PATCH` para actualizaciones parciales: solo se modifican los campos presentes en el body, el resto permanece sin cambios
-- `.env.example` en el repositorio con todas las variables necesarias documentadas, sin valores reales
-- `.gitignore` que excluya `node_modules`, `.env`, y archivos de sistema operativo
-- Script SQL de inicialización de esquema ejecutado automáticamente por Docker al primer arranque
-- Estructura de proyecto con separación clara de responsabilidades: configuración de base de datos, definición de rutas y punto de entrada en archivos distintos
-- Historial de commits que refleje un proceso de desarrollo incremental — no se acepta un único commit con todo el trabajo
-
----
-
-## Bonus
-
-Los puntos bonus se suman sobre la nota del nivel entregado. Cada bonus se evalúa de forma independiente.
-
-### Integración full stack `(+10 puntos)`
-
-Integrar el frontend provisto en el mismo `docker-compose.yml` que la API.
-
-Condiciones:
-- Un único `docker-compose.yml` levanta ambos servicios
-- El frontend consume la API sin configuración manual posterior al `docker-compose up`
-- Ambos servicios operativos con un solo comando
-
-### Personalización del frontend `(+5 puntos)`
-
-Adaptar el frontend para que refleje el dominio elegido: etiquetas en el idioma correcto, nombres de campos legibles, y cualquier ajuste visual que mejore la experiencia del usuario final.
-
-Condiciones:
-- El frontend no debe mostrar `campo1`, `campo2`, etc. — deben verse los nombres reales del dominio
-- Los cambios deben ser coherentes con el recurso implementado en la API
-- Aplica únicamente si el bonus de integración también fue completado
-
----
-
-## Configuración del frontend
-
-El frontend provisto requiere dos valores en `public/js/config.js`:
-
-```js
-window.API_URL = "http://localhost:8080"; // URL base de tu API
-window.RESOURCE = "products";             // Nombre del recurso en tu API
+```
+/project-root
+│
+├── backend/
+│   ├── index.php          # Router principal
+│   ├── controller.php     # Lógica CRUD
+│   ├── db.php             # Conexión a PostgreSQL
+│   ├── validator.php      # Validaciones
+│   ├── .htaccess          # Rewrite para rutas REST
+│   └── Dockerfile.php     # Imagen del backend
+│
+├── frontend/              # Cliente (HTML + JS + Nginx)
+│
+├── sql/
+│   └── schema.sql         # Creación de tabla + datos iniciales
+│
+├── docker-compose.yml     # Orquestación de servicios
+├── .env                   # Variables de entorno (NO versionado)
+├── .env.example           # Ejemplo de configuración
+├── .gitignore
 ```
 
-`RESOURCE` debe coincidir exactamente con el nombre que usaste en las rutas de tu API.
+---
+
+## ⚙️ Tecnologías utilizadas
+
+* PHP 8.2 (Apache)
+* PostgreSQL 15
+* Docker & Docker Compose
+* JavaScript (frontend)
+* Nginx
 
 ---
 
-## Entrega
+## 🐳 Ejecución del proyecto
 
-- Repositorio en GitHub con visibilidad pública
-- El sistema levanta con un único comando
+### 1. Clonar repositorio
+
+```bash
+git clone <repo-url>
+cd project-root
+```
+
+---
+
+### 2. Crear archivo `.env`
+
+```env
+DB_HOST=db
+DB_PORT=5432
+DB_NAME=players_db
+DB_USER=postgres
+DB_PASSWORD=postgres
+
+APP_PORT=8080
+```
+
+---
+
+### 3. Levantar servicios
+
+```bash
+docker compose down -v
+docker compose up --build
+```
+
+---
+
+### 4. Acceso a la aplicación
+
+* API → http://localhost:8080/players
+* Frontend → http://localhost:8088
+
+---
+
+## 🐘 Base de datos
+
+La base de datos se inicializa automáticamente al iniciar Docker mediante:
+
+```
+/docker-entrypoint-initdb.d/schema.sql
+```
+
+### Tabla creada
+
+* `players`
+
+Campos:
+
+| Campo          | Tipo    | Descripción        |
+| -------------- | ------- | ------------------ |
+| id             | integer | PK autoincremental |
+| nombre         | string  | nombre del jugador |
+| equipo         | string  | equipo             |
+| posicion       | string  | posición           |
+| edad           | integer | edad               |
+| promedio_goles | float   | promedio           |
+| activo         | boolean | estado             |
+
+---
+
+## 🔌 Endpoints disponibles
+
+### GET — listar todos
+
+```
+GET /players
+```
+
+### GET — obtener uno
+
+```
+GET /players/{id}
+```
+
+### POST — crear
+
+```
+POST /players
+```
+
+### PUT — actualizar
+
+```
+PUT /players/{id}
+```
+
+### DELETE — eliminar
+
+```
+DELETE /players/{id}
+```
+
+---
+
+## 📦 Ejemplo de request (POST)
+
+```json
+{
+  "campo1": "Messi",
+  "campo2": "Inter Miami",
+  "campo3": "Delantero",
+  "campo4": 36,
+  "campo5": 0.85,
+  "campo6": true
+}
+```
+
+---
+
+## 📊 Posibles respuestas
+
+### ✔ 200 OK
+
+Operación exitosa
+
+### ✔ 201 Created
+
+Recurso creado correctamente
+
+### ✔ 204 No Content
+
+Recurso eliminado
+
+### ❌ 400 Bad Request
+
+Datos inválidos
+
+### ❌ 404 Not Found
+
+Recurso no encontrado
+
+### ❌ 500 Internal Server Error
+
+Error en servidor o base de datos
+
+---
+
+## 🔐 Validaciones
+
+Todos los campos son obligatorios:
+
+* `campo1`, `campo2`, `campo3` → string
+* `campo4` → integer
+* `campo5` → float
+* `campo6` → boolean
+
+---
+
+## 🌐 CORS
+
+La API permite peticiones desde cualquier origen para integración con frontend:
+
+```
+Access-Control-Allow-Origin: *
+```
+
+---
+
+## 🧠 Consideraciones técnicas
+
+* Se implementó retry en la conexión a la base de datos
+* Se utiliza `.htaccess` para manejo de rutas REST
+* No se utilizan variables hardcodeadas (uso de `.env`)
+* La base de datos persiste mediante volumen Docker
+
+---
+
+## 🚀 Pruebas
+
+Se pueden realizar mediante:
+
+* Navegador (GET)
+* Postman / Thunder Client
+* Frontend incluido
+
+---
+
+## 📌 Requisitos cumplidos (Nivel MID)
+
+✔ CRUD completo
+✔ PostgreSQL
+✔ Docker con múltiples servicios
+✔ Variables de entorno
+✔ Validaciones
+✔ Códigos HTTP correctos
+✔ Persistencia de datos
+✔ Integración con frontend
+
+---
+
+## 🎯 Bonus
+
+✔ Integración frontend + backend en un solo `docker-compose`
+
+---
+
+## 👨‍💻 Autor
+
+Proyecto desarrollado como parte de evaluación técnica de API REST.
