@@ -19,5 +19,5 @@ function validate($data){
            is_string($data["campo3"]) &&
            is_int($data["campo4"]) &&
            (is_float($data["campo5"]) || is_numeric($data["campo5"])) &&
-           is_boolean($data["campo6"]);
+           is_bool($data["campo6"]);
 }
